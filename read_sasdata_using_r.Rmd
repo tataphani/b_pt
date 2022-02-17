@@ -1,0 +1,137 @@
+---
+title: "read_sasdata_using_r"
+author: "Phanikumar S Tata"
+date: "12/25/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+getwd()
+setwd()
+```
+
+
+
+
+```{r}
+#install.packages("pacman")
+library('pacman')
+```
+## Load required libraries
+
+```{r}
+pacman::p_load(
+  tidyverse,         # data management
+  stringr,           # work with strings/characters
+  lubridate,         # work with dates
+  rio,               # import / export
+  here,              # relative file paths
+  fs ,               # directory interactions
+  reticulate ,       # Interface to Python
+  haven ,            # Read SAS datasets 
+  foreign,           # Read SAS datasets
+  forcats,           # factors
+  janitor , 
+  expss
+  ) 
+```
+
+
+
+
+```{python}
+
+#install.packages('reticulate')
+library(reticulate)
+
+#step 2 
+#install_minicoda()
+envs <- conda_list()
+
+
+#step 3 
+# Here we need to create a Virtual envirnoment for Python to install use conda_create 
+
+#conda_create('rpy', packages = c('python=3.7' , 'pandas' , 'numpy' , "pyreadstat"))
+
+use_condaenv( 'rpy' , required = TRUE) 
+conda_list()
+reticulate::use_python(python = "C:\\Users\\tatav\\AppData\\Local\\r-miniconda\\envs\\rpy\\python.exe" , required = TRUE)
+reticulate::py_config()
+
+
+
+import pandas as pd
+import pyreadstat as sas
+```
+
+
+
+
+```{r}
+fs::dir_tree(path = here ("data"), resurse = TRUE)
+```
+ 
+# Create data frame from saved XPT file
+# TutorialUser: update the file path here
+# for Windows users, be sure to change the slashes between directories to a forward slash / (as on Mac or Unix) 
+#  or to double backslashes \\
+
+```{r}
+DEMO_I <- read.xport(here('data' ,'P_DEMO.XPT'))
+# To see details of the dataset
+#str(DEMO_I)
+```
+
+```{r}
+downloadNHANES <- function(fileprefix){
+  print (fileprefix)
+  outdf <- data.frame(NULL)
+  for (j in 1:length(letters)){
+    urlstring <- paste('https://wwwn.cdc.gov/nchs/nhanes/',yrs[j],'/',letters[j],fileprefix,'.XPT', sep='')
+    download.file(urlstring, tf <- tempfile(), mode="wb")
+    tmpframe <- foreign::read.xport(tf)
+    outdf <- bind_rows(outdf, tmpframe)
+  }
+  return(outdf)
+}
+
+# Specify the survey cycles required, with corresponding file suffixes
+yrs <- c('2017-2018')
+letters <- c('P_')
+
+```
+
+```{r}
+demo_2017_2020 <- downloadNHANES('DEMO')
+```
+
+
+```{r}
+DEMO <- downloadNHANES('DEMO')
+```
+
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

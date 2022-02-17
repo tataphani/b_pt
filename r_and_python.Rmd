@@ -1,0 +1,110 @@
+---
+title: "r_and_python"
+author: "Phanikumar S Tata"
+date: "12/23/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r setup, include=FALSE}
+
+library(reticulate)
+library(tidyverse)
+#reticulate uses the version of Python found on your PATH (i.e. Sys.which("python"))
+#Sys.which("python")
+#reticulate::use_python(python = "C:\\Users\\tatav\\AppData\\Local\\r-miniconda\\envs\\rpy\\python.exe" , required = TRUE)
+
+```
+
+```{r}
+covid19r <- read.csv("COVID19_by_State.csv")
+#head(covid19r)
+#names(covid19r)
+```
+
+
+```{python, include=FALSE}
+# use_condaenv( 'rpy' , required = TRUE) 
+# conda_list()
+# reticulate::use_python(python = "C:\\Users\\tatav\\AppData\\Local\\r-miniconda\\envs\\rpy\\python.exe" , required = TRUE)
+# reticulate::py_config()
+
+
+
+```
+
+
+
+```{python, include=FALSE}
+
+import pandas as pd
+import pyreadstat as sas
+covid19p = pd.read_csv("COVID19_by_State.csv")
+print(covid19p.head())
+
+```
+
+
+
+```{python, include=FALSE}
+adsl_py = sas.read_xport('C:/Users/tatav/Documents/rpython/datasets/adsl.xpt'  )
+pd.head(adsl_py)
+
+
+adsl_py.shap
+```
+
+# To see number of rows and columns 
+
+
+```{python, include=FALSE}
+mydata = {'productcode': ['AA', 'AA', 'AA', 'BB', 'BB', 'BB'],
+sales': [1010, 1025.2, 1404.2, 1251.7, 1160, 1604.8],
+cost' : [1020, 1625.2, 1204, 1003.7, 1020, 1124]}
+df = pd.DataFrame(mydata)
+
+```
+
+
+## R Markdown
+R Markdown Python Engine
+Source: vignettes/r_markdown.Rmd
+Overview
+The reticulate package includes a Python engine for R Markdown that enables easy interoperability between Python and R chunks.
+
+Python chunks behave very similar to R chunks (including graphical output from matplotlib) and the two languages have full access each other’s objects. Built in conversion for many Python object types is provided, including NumPy arrays and Pandas data frames.
+
+If you are using knitr version 1.18 or higher, then the reticulate Python engine will be enabled by default whenever reticulate is installed and no further setup is required. If you are running an earlier version of knitr or want to disable the use of the reticulate engine see the Engine Setup section below.
+
+# Python Version
+By default, reticulate uses the version of Python found on your PATH (i.e. Sys.which("python")). If you want to use an alternate version you should add one of the use_python() family of functions to your R Markdown setup chunk, for example:
+
+```{r include=FALSE}
+
+```
+
+
+Python Version Configuration for additional details on configuring Python versions (including the use of conda or virtualenv environments).
+
+# Python Chunks
+Python code chunks work exactly like R code chunks: Python code is executed and any print or graphical (matplotlib) output is included within the document.
+
+Python chunks all execute within a single Python session so have access to all objects created in previous chunks. Chunk options like echo, include, etc. all work as expected.
+
+Here’s an R Markdown document that demonstrates this:
+
+
+```{r}
+mtcars <- mtcars
+```
+
+
+```{python }
+import pandas as pd 
+#print(r.mtcars.head())
+
+```
+
